@@ -125,10 +125,15 @@ class KNearestNeighbor(object):
     # HINT: Try to formulate the l2 distance using matrix multiplication    #
     #       and two broadcast sums.                                         #
     #########################################################################
-    #Expanding the Euclidean distance formula out
-    #
-    dists = (np.sum(X**2,axis=1)[:,np.newaxis] + np.sum(self.X_train**2,axis=1) + (-2*np.dot(X,self.X_train.T)))**.5
-
+    #Expanding the Euclidean distance formula out - can calculate l2 distance
+    #with x^2 + x.train^2 - 2x*x.train
+    #x^2 + x.train^2 -> can be expressed in terms of two broadcast sums
+    #matrix multiplication for -2*x*x.train
+    
+    X2 = np.sum(X**2,axis=1);
+    Xtrain2 = np.sum(self.X_train**2,axis=1)
+    XY = (-2*np.dot(X,self.X_train.T))
+    dists = (X2[:,np.newaxis] + Xtrain2 + XY)**.5
     pass
     #########################################################################
     #                         END OF YOUR CODE                              #
