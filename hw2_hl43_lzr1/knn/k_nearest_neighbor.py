@@ -132,7 +132,7 @@ class KNearestNeighbor(object):
     
     X2 = np.sum(X**2,axis=1);
     Xtrain2 = np.sum(self.X_train**2,axis=1)
-    XY = (-2*np.dot(X,self.X_train.T))
+    XY = (-2*np.matmul(X,self.X_train.T))
     dists = (X2[:,np.newaxis] + Xtrain2 + XY)**.5
     pass
     #########################################################################

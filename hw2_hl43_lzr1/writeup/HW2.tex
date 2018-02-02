@@ -16,4 +16,8 @@ True, if the training data is linearly separable, then the data should be able f
 4. (True/False) The first term of $J(\theta^*)$ always increases as we increase $\lambda$.\\
 False, the first term of $J(\theta^*)$ will may not always increase as we increase $\lambda$.  Since $J(\theta^*)$ is the minimum cost corresponding to the optimal theta, as $\lambda$ increases, the cost gets lower as we subtract the regularization term from the cost. Therefore, as $\lambda$ increases, the cost function most likely actually gets lower, and once a minimum is found, it can be either greater or lower than a different value of $\lambda$, depending on how the function looks. Most likely, however, the cost will be lower as it started at a lower position.\\
 
+True, if you ignore the case of $\lambda = 0$, then whenever $\lambda$ is increased, the first term of $J(\theta)^*$ will always increase as well. As $\lambda$ increases, the entire loss function will increase, continuing to increase with the addition term indefinitely.\\
+
+False, the first term of $J(\theta^*)$ will may not always increase as we increase $\lambda$. It is possible for the value of $\lambda$ where the first term of $J(\theta^*)$ will remain constant rather than increasing\\
+
 \end{document}
