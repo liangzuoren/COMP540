@@ -16,4 +16,18 @@ True, if the training data is linearly separable, then the data should be able f
 4. (True/False) The first term of $J(\theta^*)$ always increases as we increase $\lambda$.\\
 True, if you ignore the case of $\lambda = 0$, then whenever $\lambda$ is increased, the first term of $J(\theta)^*$ will always increase as well. As $\lambda$ increases, the entire loss function will increase, continuing to increase with the addition term indefinitely. The first term of $J(\lambda)$ represents the data loss of the logistic regression model. As you increase $\lambda$, the data loss will increase as it is attempting to decrease the overfitting(as overfitting too much would actually cause the cost function in the training set to become 0), therefore $\lambda$ increasing will cause the first term of $J(\theta)$ to always increase.\\
 
+\section*{kNN Classifier}
+\textbf{Classifying test data with a knn-classifier}\\
+Question: Notice the structured patterns in the distance matrix, where some rows or columns are visible brighter. (Note that with the default color scheme black indicates low distances while white indicates high distances.)\\
+
+What in the data is the cause behind the distinctly bright rows?\\
+What causes the columns?\\
+Answer: The data behind distinctly bright rows is a test sample that is high distance from every "category" within the training data. Therefore, it might be an object that is not currently categorized within the dataset or is very different from all other objects within the dataset.\\
+
+The data behind distinctly bright columns are training set samples that do not seem to exist within the test set, and therefore show high distances from every item of the test set.\\
+
+\textbf{Choosing k by cross-validation}\\
+Chosen k value: 10\\
+Obtained accuracy: 0.282\\
+
 \end{document}
