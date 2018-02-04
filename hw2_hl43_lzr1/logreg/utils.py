@@ -14,9 +14,8 @@ import scipy.io
 def sigmoid (z):
     sig = np.zeros(z.shape)
     # Your code here
-    
+    sig = 1.0/(1+np.exp(-z))
     # End your code
-
     return sig
 
 ######################################################################################
@@ -29,7 +28,7 @@ def sigmoid (z):
 def log_features(X):
     logf = np.zeros(X.shape)
     # Your code here
-    
+    logf = np.log(1 + X)
     # End your code
     return logf
 
@@ -55,7 +54,7 @@ def std_features(X):
 def bin_features(X):
     tX = np.zeros(X.shape)
     # your code here
-
+    tX = (X > 0).astype(int)
     # end your code
     return tX
 
@@ -91,6 +90,27 @@ def select_lambda_crossval(X,y,lambda_low,lambda_high,lambda_step,penalty):
     # Your code here
     # Implement the algorithm above.
 
+    lambda_list= np.arange(lambda_low, lambda_high, lambda_step)
+    accuracy_lambda = np.zeros((len(lambda_list),))
+    j = 0
+    for lambda_value in lambda_list:
+        #split data into 10 folds
+        k = 10
+        kfolds = model_selection.KFold(n_splits=k)
+        accuracy_k = np.zeros((k,))
+        i = 0
+        for (train,test) in kfolds.split(X):
+            X_train, X_test, y_train, y_test = X[train], X[test], y[train], y[test]
+            sk_logreg_reg = linear_model.LogisticRegression(C=1.0/lambda_value, fit_intercept=False, penalty= penalty)
+            sk_logreg_reg.fit(X_train,y_train)
+            predy = sk_logreg_reg.predict(X_test)
+            accuracy_test = float((predy == y_test).sum()) / len(y_test)
+            accuracy_k[i] = accuracy_test
+            i = i + 1
+        accuracy_lambda[j] = np.mean(accuracy_k)
+        j = j + 1
+    index_best_lambda = np.argmax(accuracy_lambda)
+    best_lambda = lambda_list[index_best_lambda]
 
     # end your code
 
