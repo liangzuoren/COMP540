@@ -1,0 +1,51 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+
+\begin{document}
+Problem 7\\
+7.1\\
+The reason the loss should be about $-ln(0.1)$ is because of the probability function. There are 10 classes in this
+dataset and therefore a random sampling should contain about all 10 classes with the probability of a specific class
+showing up to be 1/10. Therefore, when calculating the loss function, the inside of the $log_e$ will be 1/10.
+\\
+7.9\\
+It seems like the OVA has a higher accuracy at 0.361 compared to our Softmax regression's 0.274. Softmax regression should be able to attain greater than 0.35 but it seems like the parameters we used did not show that. Our conclusion is that OVA is better at classifying for the CIFAR-10 dataset in this case but in general they should behave around the same amount. 
+
+Columns for Confusion Matrix:\\
+$['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']$\\
+Confusion Matrix for Softmax\\
+$\begin{bmatrix}
+588 & 8 & 2 & 3 & 7&  31&  88&   6& 201&  66\\
+186&  87 &  0 &  5  & 8 & 44 &294&  12& 161& 203\\
+307&  11&  19 &  3 & 30 & 84& 403&  24 & 62&  57\\
+211&   8 &  6 & 22 & 11 &177& 381&  29 & 53& 102\\
+155&   7 &12 &  6 &45 &105& 520&  28 & 53&  69\\
+212&   2 & 10 & 11& 17 &271& 310&  32&  80&  55\\
+155&   4 &  2 & 3  & 9  &72 &638 & 23 & 19 & 75\\
+198&   8 &  1  & 6 & 34 &107& 265&  89&  81& 211\\
+265&  17 &  0  & 1 &  3  &69 & 64 & 3& 461&117\\
+190&  25&   1  & 2 &  8  &19& 138 &  9& 191& 417
+\end{bmatrix}\\$
+\\
+\\
+Confusion Matrix for OVA
+$\begin{bmatrix}
+465&59&22&24&19&35&26&60&200&90\\
+67&463&18&34&23&31&44&51&96&173\\
+123&64&194&77&96&89&151&88&70&48\\
+67&86&78&161&48&193&171&51&62&83\\
+65&38&102&64&234&90&194&129&36&48\\
+47&63&81&127&81&272&114&89&71&55\\
+31&53&67&102&86&78&457&51&29&46\\
+53&62&51&46&69&85&66&406&47&115\\
+149&78&8&25&9&34&22&19&541&115\\
+59&208&14&22&23&29&60&56&109&420\\
+\end{bmatrix}\\$
+\\
+\\
+\\
+By looking at the confusion matrices, one can get a good idea of what classifications worked and which did not. Looking at the diagonal row shows\\
+the categories that were obtained correctly by each classification algorithm. It appears that Softmax is very good at classifying some types of images\\
+while being very poor for others while OVA seems pretty decent regardless of the image. There are still ups and downs but much less drastic as softmax.\\
+For example, planes are classified well (588) in Softmax but birds, cats and deer all perform much worse(19, 22, and 45). OVA is much better in these categories(194,161,234), but classify planes more poorly(465)
+\end{document}
