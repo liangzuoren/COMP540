@@ -31,7 +31,18 @@ class one_vs_allLogisticRegressor:
         # Compute the K logistic regression classifiers                           #
         # TODO: 7-9 lines of code expected                                        #
         ###########################################################################
+        # default penaty = l2; X already have the intercept col prpended.
+        # dim = (d +1)
+        for k in range(len(self.labels)):
+            label_k = self.labels[k]
+            #transform the labels
+            y_k = (y == label_k).astype(int)
+            sk_logreg_l2_k = linear_model.LogisticRegression(C=1.0/reg,solver='lbfgs',fit_intercept=False)
+            sk_logreg_l2_k.fit(X,y_k)
+            theta_opt[:,k] = sk_logreg_l2_k.coef_
 
+
+        
 
         ###########################################################################
         #                           END OF YOUR CODE                              #
@@ -57,7 +68,10 @@ class one_vs_allLogisticRegressor:
         # Compute the predicted outputs for X                                     #
         # TODO: 1-2 lines of code expected                                        #
         ###########################################################################
-
+        # an m by k matrix indicating the probability of each Xi with each class k
+        prob = utils.sigmoid(X.dot(self.theta))
+        # find the indices of the max probability for each sample (each row)
+        y_pred = np.argmax(prob, axis=1)
 
         ###########################################################################
         #                           END OF YOUR CODE                              #
