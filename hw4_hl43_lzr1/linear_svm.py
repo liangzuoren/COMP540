@@ -28,7 +28,14 @@ def binary_svm_loss(theta, X, y, C):
   # Implement the binary SVM hinge loss function here                        #
   # 4 - 5 lines of vectorized code expected                                  #
   ############################################################################
-
+  h = np.matmul(X,theta)
+  loss = y*h;
+  maxloss = C/float(m)*np.sum(np.maximum(np.zeros(m),1-loss))
+  J = 0.5/float(m)*np.sum(theta**2)+maxloss
+  comparison_vector = np.ones(m)
+  gradloss = X*y[:,np.newaxis]
+  grad = theta/float(m) + C/float(m)*np.sum(-gradloss[loss<comparison_vector,:],axis=0)
+  grad = grad.T
   #############################################################################
   #                             END OF YOUR CODE                              #
   #############################################################################
