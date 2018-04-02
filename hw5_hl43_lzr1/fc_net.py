@@ -46,7 +46,10 @@ class TwoLayerNet(object):
     # layer weights and biases using the keys 'theta2' and 'theta2_0.          #
     ############################################################################
     # 4 lines of code expected
-
+    self.params["theta1"] = weight_scale * np.random.randn(input_dim, hidden_dim)
+    self.params["theta1_0"] = np.zeros((1,hidden_dim))
+    self.params["theta2"] = weight_scale * np.random.randn(hidden_dim, num_classes)
+    self.params["theta2_0"] = np.zeros((1,num_classes))
     pass
     ############################################################################
     #                             END OF YOUR CODE                             #
@@ -79,8 +82,14 @@ class TwoLayerNet(object):
     ############################################################################
     # Hint: unpack the weight parameters from self.params
     # 3 lines of code expected
-
-
+    theta1,theta1_0,theta2,theta2_0 = self.params["theta1"], self.params["theta1_0"], self.params["theta2"], self.params["theta2_0"]
+    
+    #First layer
+    first_out, first_cache = affine_relu_forward(X, theta1, theta1_0)
+    #Second layer
+    second_out, second_cache = affine_forward(first_out,theta2,theta2_0)
+    
+    scores = second_out
     pass
     ############################################################################
     #                             END OF YOUR CODE                             #
@@ -102,7 +111,17 @@ class TwoLayerNet(object):
     # of 0.5 to simplify the expression for the gradient.                      #
     ############################################################################
     # 4-8 lines of code expected
-
+    
+    sftmax_loss, sftmax_grad = softmax_loss(scores,y)
+    loss = sftmax_loss
+    loss = loss + 0.5*self.reg*np.sum(theta1**2)
+    loss = loss + 0.5*self.reg*np.sum(theta2**2)
+    
+    dx_1, grads["theta2"], grads["theta2_0"] = affine_backward(sftmax_grad,second_cache)
+    dx_2, grads["theta1"], grads["theta1_0"] = affine_relu_backward(dx_1, first_cache)
+    
+    grads["theta1"] += self.reg*theta1
+    grads["theta2"] += self.reg*theta2
     pass
     ############################################################################
     #                             END OF YOUR CODE                             #
@@ -164,8 +183,19 @@ class FullyConnectedNet(object):
     #                                                                          #
     ############################################################################
     # about 4 lines of code
-
-
+    for layer_number in range(1,self.num_layers):
+        weight =  "theta"+str(layer_number)
+        bias =  "theta"+str(layer_number)+"_0"
+        if layer_number==1:
+            self.params[weight] = weight_scale * np.random.randn(input_dim, hidden_dims[0])
+            self.params[bias] = np.zeros((1,hidden_dims[0]))
+        elif layer_number==self.num_layers-1:
+            self.params[weight] = weight_scale * np.random.randn(hidden_dims[layer_number-2], num_classes)
+            self.params[bias] = np.zeros((1,num_classes))
+        else:
+            self.params[weight] = weight_scale * np.random.randn(hidden_dims[layer_number-2], hidden_dims[layer_number-1])
+            self.params[bias] = np.zeros((1,hidden_dims[layer_number-1]))
+        
     ############################################################################
     #                             END OF YOUR CODE                             #
     ############################################################################
@@ -209,7 +239,34 @@ class FullyConnectedNet(object):
     # dropout forward pass.                                                    #
     #                                                                          #
     ############################################################################
-
+    layer_out = {}
+    layer_cache = {}
+    dropout_cache = {}
+    
+    X = X.reshape(X.shape[0],np.prod(X.shape[1:]))
+    for layer_number in range(1,self.num_layers):
+        weight_name = "theta"+str(layer_number)
+        bias_name = "theta"+str(layer_number)+"_0"
+        weight = self.params[weight_name]
+        bias = self.params[bias_name]
+        if layer_number==1:
+            layer_out[weight_name], layer_cache[weight_name] = affine_relu_forward(X,weight,bias)
+            previous_weight_name = weight_name
+            if self.use_dropout:
+                layer_out[weight_name], dropout_cache[weight_name] = dropout_forward(layer_out[weight_name], self.dropout_param)
+        elif layer_number==self.num_layers-1:
+            layer_out[weight_name], layer_cache[weight_name] = affine_forward(layer_out[previous_weight_name],weight,bias)
+        else:
+            layer_out[weight_name], layer_cache[weight_name] = affine_relu_forward(layer_out[previous_weight_name],weight,bias)
+            previous_weight_name = weight_name
+            if self.use_dropout:
+                layer_out[weight_name], dropout_cache[weight_name] = dropout_forward(layer_out[weight_name], self.dropout_param)
+                
+    
+    weight_name = "theta"+str(self.num_layers-1)
+    
+    scores = layer_out[weight_name]
+    
     pass
     ############################################################################
     #                             END OF YOUR CODE                             #
@@ -231,8 +288,30 @@ class FullyConnectedNet(object):
     # automated tests, make sure that your L2 regularization includes a factor #
     # of 0.5 to simplify the expression for the gradient.                      #
     ############################################################################
-
-
+    sftmax_loss, sftmax_grad = softmax_loss(scores,y)
+    loss = sftmax_loss
+    for layer_number in range(1,self.num_layers):
+        weight_name =  "theta"+str(layer_number)
+        bias_name =  "theta"+str(layer_number)+"_0"
+        weight = self.params[weight_name]
+        bias = self.params[bias_name]
+        loss = loss + 0.5*self.reg*np.sum(weight**2) #adding nth layer regularization 
+    
+    for layer_number in range(self.num_layers-1,0,-1):
+        weight_name =  "theta"+str(layer_number)
+        bias_name =  "theta"+str(layer_number)+"_0"
+        weight = self.params[weight_name]
+        bias = self.params[bias_name]
+    
+        if layer_number==self.num_layers-1:
+            dx, grads[weight_name], grads[bias_name] = affine_backward(sftmax_grad,layer_cache[weight_name])
+        else:
+            if self.use_dropout:
+                dx = dropout_backward(dx,dropout_cache[weight_name])
+            dx, grads[weight_name], grads[bias_name] = affine_relu_backward(dx,layer_cache[weight_name])
+        
+        grads[weight_name] += self.reg*weight
+            
     pass
     ############################################################################
     #                             END OF YOUR CODE                             #
