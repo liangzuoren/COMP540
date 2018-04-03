@@ -1,0 +1,1 @@
+{"LearningRate": 0.0003, "Dropout": 0.25, "ValidationAccuracy": 0.539, "Weight": 0.05, "TestAccuracy": 0.524}
