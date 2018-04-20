@@ -16,6 +16,8 @@ def pca(X):
 
     # When computing the covariance remember to divide by
     # the number of rows in X
+    covariance = np.dot(X.T,X)/X.shape[0]
+    U,S,V=np.linalg.svd(covariance,full_matrices=False)
     
     ########################################################
     #           END YOUR CODE                              #
@@ -37,8 +39,8 @@ def project_data(X,U,K):
     #########################################################
     #         YOUR CODE HERE                                #
     #########################################################
-    
-    
+    top_K_U = U[:,0:K]
+    Z = np.dot(X,top_K_U)
     
     ########################################################
     #           END YOUR CODE                              #
@@ -58,9 +60,9 @@ def recover_data(Z,U,K):
     #########################################################
     #         YOUR CODE HERE                                #
     #########################################################
-    
-   
-
+    top_K_U = U[:,0:K].T
+    X_rec = np.dot(Z,top_K_U)
+    #X_rec = X_rec[:,0:K]
     ########################################################
     #           END YOUR CODE                              #
     ########################################################
